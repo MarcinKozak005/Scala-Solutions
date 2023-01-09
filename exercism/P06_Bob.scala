@@ -1,4 +1,4 @@
-object Bob {
+object P06_Bob {
   def response(statement: String): String = statement match {
     case str if str.trim.endsWith("?") && str.equals(str.toUpperCase) && str.matches(".*[a-zA-Z].*") => "Calm down, I know what I'm doing!"
     case str if str.trim.endsWith("?") => "Sure."

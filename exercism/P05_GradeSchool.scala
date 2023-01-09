@@ -1,6 +1,6 @@
 import scala.collection.mutable.Map
 
-class School {
+class P05_School {
   type DB = Map[Int, Seq[String]]
 
   val roster = Map[Int,Seq[String]]()

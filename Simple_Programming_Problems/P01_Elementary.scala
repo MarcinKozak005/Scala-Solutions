@@ -5,7 +5,7 @@ import scala.util.Random
 import scala.collection.mutable.ArrayBuffer
 import java.time.Year
 
-object Elementary {
+object P01_Elementary {
 
     def P1HelloWorld : Unit = println("Hello World")
 

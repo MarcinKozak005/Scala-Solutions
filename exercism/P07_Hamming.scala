@@ -1,4 +1,4 @@
-object Hamming {
+object P07_Hamming {
   def distance(dnaStrandOne: String, dnaStrandTwo: String): Option[Int] = {
     if (dnaStrandOne.length == dnaStrandTwo.length) {
       var diff = 0
