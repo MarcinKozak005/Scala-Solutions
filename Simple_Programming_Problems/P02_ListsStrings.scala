@@ -107,6 +107,30 @@ object P02_ListsStrings {
 
     def P10ListAlternatingMerge02(list1 : List[Any], list2: List[Any]) : List[Any] = list1 zip list2 flatten {case (a,b) => List(a,b)}
 
+    def P11ListMergeSorted01(list1: List[Int], list2: List[Int]) : List[Int] = {
+        if (list1 == Nil) {
+            list2
+        } else if (list2 == Nil) {
+            list1
+        } else {
+            if (list1(0) <= list2(0)) {
+                list1(0) +: P11ListMergeSorted01(list1.slice(1,list1.length), list2)   
+            } else {
+                list2(0) +: P11ListMergeSorted01(list1, list2.slice(1,list2.length))
+            } 
+        }
+    }
+
+    def P12ListRotate01(list: List[Any], k: Int) : List[Any] = {
+        val shift = k % list.length
+        shift match {
+            case 0 => list
+            case x if x > 0 => P12ListRotate01(list.drop(1) :+ list(0),x-1) 
+        }
+    }
+
+    def P12ListRotate02(list: List[Any], k: Int) : List[Any] = list.drop(k) ::: list.take(k)
+
     // Arrays
 
     def P01ArrayLargest01(array : Array[Int]) : Int = array.max
@@ -190,6 +214,35 @@ object P02_ListsStrings {
         result
     }
 
+    def P11ArrayMergeSorted01(array1: Array[Int], array2: Array[Int]) : Array[Int] = {
+        val result = new Array[Int](array1.length + array2.length)
+        var i = 0
+        var j = 0
+        while (i < array1.length && j < array2.length){
+            if(array1(i) <= array2(j)){
+                result(i+j) = array1(i)
+                i+=1
+            } else {
+                result(i+j) = array2(j)
+                j+=1
+            }
+        }
+        while(i < array1.length){
+            result(i+j) = array1(i)
+            i+=1
+        }
+        while(j < array2.length){
+            result(i+j) = array2(j)
+            j+=1
+        }
+        result
+    }
+
+    def P12ArrayRotate01(array: Array[Int], k: Int) : Array[Int] = {
+        val shift = k % array.length
+        Array.concat(array.slice(shift,array.length), array.slice(0,shift))
+    }
+
     // Strings
 
     def P06IsPalindrome01(str: String): Boolean = str.equals(str.reverse)
@@ -205,45 +258,50 @@ object P02_ListsStrings {
     def main(args: Array[String]) : Unit = {
         println("Lists")
         val list = List(3, 2, 1, 32, 11, 23)
-        println(f"P01 L 01: ${P01ListLargest01(list)}")
-        println(f"P01 L 02: ${P01ListLargest02(list)}")
-        println(f"P02 L 01: ${P02ListReverse01(list)}")
-        println(f"P02 L 02: ${P02ListReverse02(list)}")
-        println(f"P03 L 01: ${P03ListContains01(list,2)}")
-        println(f"P03 L 02: ${P03ListContains02(list,2)}")
-        println(f"P04 L 01: ${P04ListOddPositions01(list)}")
-        println(f"P04 L 02: ${P04ListOddPositions02(list)}")
-        println(f"P05 L 01: ${P05ListRunningTotal01(list)}")
-        println(f"P05 L 02: ${P05ListRunningTotal02(list)}")
-        println(f"P05 L 03: ${P05ListRunningTotal03(list)}")
-        println(f"P07 L 01: ${P07Sum01(list)}")
-        println(f"P07 L 02: ${P07Sum02(list)}")
-        println(f"P07 L 03: ${P07Sum03(list)}")
-        println(f"P07 L 04: ${P07Sum04(list)}")
-        println(f"P08 L 01: ${P08ListOnAll01(List.range(1,21), x => x*x)}")
-        println(f"P09 L 01: ${P09ListConcatenate01(List('a','b','c'),List(1,2,3))}")
-        println(f"P10 L 01: ${P10ListAlternatingMerge01(List('a','b','c'),List(1,2,3))}")
-        println(f"P10 L 02: ${P10ListAlternatingMerge02(List('a','b','c'),List(1,2,3))}")
+        // println(f"P01 L 01: ${P01ListLargest01(list)}")
+        // println(f"P01 L 02: ${P01ListLargest02(list)}")
+        // println(f"P02 L 01: ${P02ListReverse01(list)}")
+        // println(f"P02 L 02: ${P02ListReverse02(list)}")
+        // println(f"P03 L 01: ${P03ListContains01(list,2)}")
+        // println(f"P03 L 02: ${P03ListContains02(list,2)}")
+        // println(f"P04 L 01: ${P04ListOddPositions01(list)}")
+        // println(f"P04 L 02: ${P04ListOddPositions02(list)}")
+        // println(f"P05 L 01: ${P05ListRunningTotal01(list)}")
+        // println(f"P05 L 02: ${P05ListRunningTotal02(list)}")
+        // println(f"P05 L 03: ${P05ListRunningTotal03(list)}")
+        // println(f"P07 L 01: ${P07Sum01(list)}")
+        // println(f"P07 L 02: ${P07Sum02(list)}")
+        // println(f"P07 L 03: ${P07Sum03(list)}")
+        // println(f"P07 L 04: ${P07Sum04(list)}")
+        // println(f"P08 L 01: ${P08ListOnAll01(List.range(1,21), x => x*x)}")
+        // println(f"P09 L 01: ${P09ListConcatenate01(List('a','b','c'),List(1,2,3))}")
+        // println(f"P10 L 01: ${P10ListAlternatingMerge01(List('a','b','c'),List(1,2,3))}")
+        // println(f"P10 L 02: ${P10ListAlternatingMerge02(List('a','b','c'),List(1,2,3))}")
+        println(f"P11 L 01: ${P11ListMergeSorted01(List(1,4,6),List(2,3,5))}")
+        println(f"P12 L 01: ${P12ListRotate01(list,2)}")
+        println(f"P12 L 02: ${P12ListRotate02(list,2)}")
         
         println("\nArrays")
         val array = Array(3, 2, 1, 32, 11, 23)
-        println(f"P01 A 01: ${P01ArrayLargest01(array)}")
-        println(f"P01 A 02: ${P01ArrayLargest02(array)}")
-        println(f"P02 A 01: ${P02ArrayReverse01(array).mkString(" ")}")
-        println(f"P02 A 02: ${P02ArrayReverse02(array).mkString(" ")}")
-        println(f"P03 A 01: ${P03ArrayContains01(array,2)}")
-        println(f"P03 A 02: ${P03ArrayContains02(array,2)}")
-        println(f"P03 A 03: ${P03ArrayContains03(array,2)}")
-        println(f"P04 A 01: ${P04ArrayOddPositions01(array).mkString(" ")}")
-        println(f"P05 A 01: ${P05ArrayRunningTotal01(array)}")
-        println(f"P05 A 02: ${P05ArrayRunningTotal02(array)}")
-        println(f"P08 A 01: ${P08ArrayOnAll01(List.range(1,21).toArray, x => x*x).mkString(" ")}")
-        println(f"P09 A 01: ${P09ArrayConcatenate01(Array('a','b','c'),Array(1,2,3)).mkString(" ")}")
-        println(f"P10 A 01: ${P10ArrayAlternatingMerge01(Array('a','b','c'),Array(1,2,3)).mkString(" ")}")
+        // println(f"P01 A 01: ${P01ArrayLargest01(array)}")
+        // println(f"P01 A 02: ${P01ArrayLargest02(array)}")
+        // println(f"P02 A 01: ${P02ArrayReverse01(array).mkString(" ")}")
+        // println(f"P02 A 02: ${P02ArrayReverse02(array).mkString(" ")}")
+        // println(f"P03 A 01: ${P03ArrayContains01(array,2)}")
+        // println(f"P03 A 02: ${P03ArrayContains02(array,2)}")
+        // println(f"P03 A 03: ${P03ArrayContains03(array,2)}")
+        // println(f"P04 A 01: ${P04ArrayOddPositions01(array).mkString(" ")}")
+        // println(f"P05 A 01: ${P05ArrayRunningTotal01(array)}")
+        // println(f"P05 A 02: ${P05ArrayRunningTotal02(array)}")
+        // println(f"P08 A 01: ${P08ArrayOnAll01(List.range(1,21).toArray, x => x*x).mkString(" ")}")
+        // println(f"P09 A 01: ${P09ArrayConcatenate01(Array('a','b','c'),Array(1,2,3)).mkString(" ")}")
+        // println(f"P10 A 01: ${P10ArrayAlternatingMerge01(Array('a','b','c'),Array(1,2,3)).mkString(" ")}")
+        println(f"P11 A 01: ${P11ArrayMergeSorted01(Array(1,4,6),Array(2,3,5)).mkString(" ")}")
+        println(f"P12 A 01: ${P12ArrayRotate01(array,2).mkString(" ")}")
 
         println("\nStrings")
-        println(f"P06 S 01: ${P06IsPalindrome01("eye")}")
-        println(f"P06 S 02: ${P06IsPalindrome02("eye")}")
+        // println(f"P06 S 01: ${P06IsPalindrome01("eye")}")
+        // println(f"P06 S 02: ${P06IsPalindrome02("eye")}")
         
     }
 }
