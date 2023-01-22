@@ -131,6 +131,20 @@ object P02_ListsStrings {
 
     def P12ListRotate02(list: List[Any], k: Int) : List[Any] = list.drop(k) ::: list.take(k)
 
+    def P13ListFibonacci01() : List[Int] = {
+        def extendFibonacci(l: List[Int], n: Int) : List[Int] = {
+            if (n == 0){
+                l
+            }
+            else 
+            {
+                extendFibonacci(l :+ (l(l.length-1) + l(l.length-2)), n-1)
+            }
+            
+        }
+        extendFibonacci(List(1,1),98)
+    }
+
     // Arrays
 
     def P01ArrayLargest01(array : Array[Int]) : Int = array.max
@@ -255,53 +269,71 @@ object P02_ListsStrings {
         result
     }
 
+    // Other
+
+    def P13OtherFibonacci01() : Unit = {
+        print(f"1 1")
+        var x_1 = 1
+        var x_2 = 1
+        for (i <- 3 to 101){
+            print(f" ${x_2 + x_1}")
+            x_1 += x_2
+            x_2 = x_1 - x_2
+        }
+    }
+
     def main(args: Array[String]) : Unit = {
         println("Lists")
         val list = List(3, 2, 1, 32, 11, 23)
-        // println(f"P01 L 01: ${P01ListLargest01(list)}")
-        // println(f"P01 L 02: ${P01ListLargest02(list)}")
-        // println(f"P02 L 01: ${P02ListReverse01(list)}")
-        // println(f"P02 L 02: ${P02ListReverse02(list)}")
-        // println(f"P03 L 01: ${P03ListContains01(list,2)}")
-        // println(f"P03 L 02: ${P03ListContains02(list,2)}")
-        // println(f"P04 L 01: ${P04ListOddPositions01(list)}")
-        // println(f"P04 L 02: ${P04ListOddPositions02(list)}")
-        // println(f"P05 L 01: ${P05ListRunningTotal01(list)}")
-        // println(f"P05 L 02: ${P05ListRunningTotal02(list)}")
-        // println(f"P05 L 03: ${P05ListRunningTotal03(list)}")
-        // println(f"P07 L 01: ${P07Sum01(list)}")
-        // println(f"P07 L 02: ${P07Sum02(list)}")
-        // println(f"P07 L 03: ${P07Sum03(list)}")
-        // println(f"P07 L 04: ${P07Sum04(list)}")
-        // println(f"P08 L 01: ${P08ListOnAll01(List.range(1,21), x => x*x)}")
-        // println(f"P09 L 01: ${P09ListConcatenate01(List('a','b','c'),List(1,2,3))}")
-        // println(f"P10 L 01: ${P10ListAlternatingMerge01(List('a','b','c'),List(1,2,3))}")
-        // println(f"P10 L 02: ${P10ListAlternatingMerge02(List('a','b','c'),List(1,2,3))}")
+        println(f"P01 L 01: ${P01ListLargest01(list)}")
+        println(f"P01 L 02: ${P01ListLargest02(list)}")
+        println(f"P02 L 01: ${P02ListReverse01(list)}")
+        println(f"P02 L 02: ${P02ListReverse02(list)}")
+        println(f"P03 L 01: ${P03ListContains01(list,2)}")
+        println(f"P03 L 02: ${P03ListContains02(list,2)}")
+        println(f"P04 L 01: ${P04ListOddPositions01(list)}")
+        println(f"P04 L 02: ${P04ListOddPositions02(list)}")
+        println(f"P05 L 01: ${P05ListRunningTotal01(list)}")
+        println(f"P05 L 02: ${P05ListRunningTotal02(list)}")
+        println(f"P05 L 03: ${P05ListRunningTotal03(list)}")
+        println(f"P07 L 01: ${P07Sum01(list)}")
+        println(f"P07 L 02: ${P07Sum02(list)}")
+        println(f"P07 L 03: ${P07Sum03(list)}")
+        println(f"P07 L 04: ${P07Sum04(list)}")
+        println(f"P08 L 01: ${P08ListOnAll01(List.range(1,21), x => x*x)}")
+        println(f"P09 L 01: ${P09ListConcatenate01(List('a','b','c'),List(1,2,3))}")
+        println(f"P10 L 01: ${P10ListAlternatingMerge01(List('a','b','c'),List(1,2,3))}")
+        println(f"P10 L 02: ${P10ListAlternatingMerge02(List('a','b','c'),List(1,2,3))}")
         println(f"P11 L 01: ${P11ListMergeSorted01(List(1,4,6),List(2,3,5))}")
         println(f"P12 L 01: ${P12ListRotate01(list,2)}")
         println(f"P12 L 02: ${P12ListRotate02(list,2)}")
+        println(f"P13 L 01: ${P13ListFibonacci01()}")
+        
         
         println("\nArrays")
         val array = Array(3, 2, 1, 32, 11, 23)
-        // println(f"P01 A 01: ${P01ArrayLargest01(array)}")
-        // println(f"P01 A 02: ${P01ArrayLargest02(array)}")
-        // println(f"P02 A 01: ${P02ArrayReverse01(array).mkString(" ")}")
-        // println(f"P02 A 02: ${P02ArrayReverse02(array).mkString(" ")}")
-        // println(f"P03 A 01: ${P03ArrayContains01(array,2)}")
-        // println(f"P03 A 02: ${P03ArrayContains02(array,2)}")
-        // println(f"P03 A 03: ${P03ArrayContains03(array,2)}")
-        // println(f"P04 A 01: ${P04ArrayOddPositions01(array).mkString(" ")}")
-        // println(f"P05 A 01: ${P05ArrayRunningTotal01(array)}")
-        // println(f"P05 A 02: ${P05ArrayRunningTotal02(array)}")
-        // println(f"P08 A 01: ${P08ArrayOnAll01(List.range(1,21).toArray, x => x*x).mkString(" ")}")
-        // println(f"P09 A 01: ${P09ArrayConcatenate01(Array('a','b','c'),Array(1,2,3)).mkString(" ")}")
-        // println(f"P10 A 01: ${P10ArrayAlternatingMerge01(Array('a','b','c'),Array(1,2,3)).mkString(" ")}")
+        println(f"P01 A 01: ${P01ArrayLargest01(array)}")
+        println(f"P01 A 02: ${P01ArrayLargest02(array)}")
+        println(f"P02 A 01: ${P02ArrayReverse01(array).mkString(" ")}")
+        println(f"P02 A 02: ${P02ArrayReverse02(array).mkString(" ")}")
+        println(f"P03 A 01: ${P03ArrayContains01(array,2)}")
+        println(f"P03 A 02: ${P03ArrayContains02(array,2)}")
+        println(f"P03 A 03: ${P03ArrayContains03(array,2)}")
+        println(f"P04 A 01: ${P04ArrayOddPositions01(array).mkString(" ")}")
+        println(f"P05 A 01: ${P05ArrayRunningTotal01(array)}")
+        println(f"P05 A 02: ${P05ArrayRunningTotal02(array)}")
+        println(f"P08 A 01: ${P08ArrayOnAll01(List.range(1,21).toArray, x => x*x).mkString(" ")}")
+        println(f"P09 A 01: ${P09ArrayConcatenate01(Array('a','b','c'),Array(1,2,3)).mkString(" ")}")
+        println(f"P10 A 01: ${P10ArrayAlternatingMerge01(Array('a','b','c'),Array(1,2,3)).mkString(" ")}")
         println(f"P11 A 01: ${P11ArrayMergeSorted01(Array(1,4,6),Array(2,3,5)).mkString(" ")}")
         println(f"P12 A 01: ${P12ArrayRotate01(array,2).mkString(" ")}")
 
         println("\nStrings")
-        // println(f"P06 S 01: ${P06IsPalindrome01("eye")}")
-        // println(f"P06 S 02: ${P06IsPalindrome02("eye")}")
+        println(f"P06 S 01: ${P06IsPalindrome01("eye")}")
+        println(f"P06 S 02: ${P06IsPalindrome02("eye")}")
+
+        println("\nOther")
+        print(f"P13 O 01: "); P13OtherFibonacci01() // Int overflow
         
     }
 }
