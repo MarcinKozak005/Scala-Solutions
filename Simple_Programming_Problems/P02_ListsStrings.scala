@@ -145,6 +145,8 @@ object P02_ListsStrings {
         extendFibonacci(List(1,1),98)
     }
 
+    def P14ListSplitNumber(number: Int) : List[Int] = number.toString.map(x => x.toInt - 48).toList
+
     // Arrays
 
     def P01ArrayLargest01(array : Array[Int]) : Int = array.max
@@ -257,6 +259,8 @@ object P02_ListsStrings {
         Array.concat(array.slice(shift,array.length), array.slice(0,shift))
     }
 
+    def P14ArraySplitNumber(number: Int) : Array[Int] = number.toString.map(x => x.toString.toInt).toArray
+
     // Strings
 
     def P06IsPalindrome01(str: String): Boolean = str.equals(str.reverse)
@@ -308,6 +312,7 @@ object P02_ListsStrings {
         println(f"P12 L 01: ${P12ListRotate01(list,2)}")
         println(f"P12 L 02: ${P12ListRotate02(list,2)}")
         println(f"P13 L 01: ${P13ListFibonacci01()}")
+        println(f"P14 L 01: ${P14ListSplitNumber(2342)}")
         
         
         println("\nArrays")
@@ -327,6 +332,7 @@ object P02_ListsStrings {
         println(f"P10 A 01: ${P10ArrayAlternatingMerge01(Array('a','b','c'),Array(1,2,3)).mkString(" ")}")
         println(f"P11 A 01: ${P11ArrayMergeSorted01(Array(1,4,6),Array(2,3,5)).mkString(" ")}")
         println(f"P12 A 01: ${P12ArrayRotate01(array,2).mkString(" ")}")
+        println(f"P14 A 01: ${P14ArraySplitNumber(2342).mkString(" ")}")
 
         println("\nStrings")
         println(f"P06 S 01: ${P06IsPalindrome01("eye")}")
