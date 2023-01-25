@@ -147,6 +147,34 @@ object P02_ListsStrings {
 
     def P14ListSplitNumber(number: Int) : List[Int] = number.toString.map(x => x.toInt - 48).toList
 
+    def P15List(list1: List[Int], list2: List[Int], f: (Int,Int) => Int) : List[Int] = {
+        P14ListSplitNumber(
+            f(
+                list1.map(_.toString).mkString.toInt,
+                list2.map(_.toString).mkString.toInt
+            )
+        )
+    }
+
+    def P16ListChangeBase(list: List[Int], base1: Int, base2: Int) : List[Int] = {
+        P14ListSplitNumber(
+            java.lang.Long.toString(
+                java.lang.Long.parseLong(list.map(_.toString).mkString,base1), 
+                base2
+            ).mkString.toInt
+        )
+    }
+
+    def P17ListSelectionSort(list: List[Int]):List[Int] = list match {
+        case Nil => Nil
+        case _ => {
+            val minimal = list.min
+            val indexOfMinimal = list.indexOf(minimal)
+            minimal +: P17ListSelectionSort(list.slice(0,indexOfMinimal) ::: list.slice(indexOfMinimal+1, list.length))
+        }
+    }    
+    
+
     // Arrays
 
     def P01ArrayLargest01(array : Array[Int]) : Int = array.max
@@ -261,6 +289,10 @@ object P02_ListsStrings {
 
     def P14ArraySplitNumber(number: Int) : Array[Int] = number.toString.map(x => x.toString.toInt).toArray
 
+    def P15Array(array1: Array[Int], array2: Array[Int], f: (Int,Int) => Int) : Array[Int] = {
+        P14ArraySplitNumber(f(array1.map(_.toString).mkString.toInt, array2.map(_.toString).mkString.toInt))
+    }
+
     // Strings
 
     def P06IsPalindrome01(str: String): Boolean = str.equals(str.reverse)
@@ -286,7 +318,8 @@ object P02_ListsStrings {
         }
     }
 
-    def main(args: Array[String]) : Unit = {
+    def test() : Unit = {
+    // def main(args: Array[String]) : Unit = {
         println("Lists")
         val list = List(3, 2, 1, 32, 11, 23)
         println(f"P01 L 01: ${P01ListLargest01(list)}")
@@ -313,8 +346,12 @@ object P02_ListsStrings {
         println(f"P12 L 02: ${P12ListRotate02(list,2)}")
         println(f"P13 L 01: ${P13ListFibonacci01()}")
         println(f"P14 L 01: ${P14ListSplitNumber(2342)}")
-        
-        
+        println(f"P15 L Part01: ${P15List(List(3,2,1),List(1,2,3), _+_)}")
+        println(f"P15 L Part02: ${P15List(List(3,2,1),List(1,2,3), _-_)}")
+        println(f"P15 L Part03: ${P15List(List(3,2,1),List(1,2,3), _*_)}")
+        println(f"P16 L 01: ${P16ListChangeBase(List(1,2,3),10,5)}")
+        println(f"P17 L SelectionSort: ${P17ListSelectionSort(List(5,3,2,4,1))}")
+
         println("\nArrays")
         val array = Array(3, 2, 1, 32, 11, 23)
         println(f"P01 A 01: ${P01ArrayLargest01(array)}")
@@ -339,7 +376,9 @@ object P02_ListsStrings {
         println(f"P06 S 02: ${P06IsPalindrome02("eye")}")
 
         println("\nOther")
-        print(f"P13 O 01: "); P13OtherFibonacci01() // Int overflow
-        
+        println(f"P13 O 01: "); P13OtherFibonacci01() // Int overflow
+        println(f"P15 A Part01: ${P15Array(Array(3,2,1),Array(1,2,3), _+_).mkString}")
+        println(f"P15 A Part02: ${P15Array(Array(3,2,1),Array(1,2,3), _-_).mkString}")
+        println(f"P15 A Part03: ${P15Array(Array(3,2,1),Array(1,2,3), _*_).mkString}")
     }
 }
