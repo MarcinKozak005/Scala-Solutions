@@ -172,7 +172,14 @@ object P02_ListsStrings {
             val indexOfMinimal = list.indexOf(minimal)
             minimal +: P17ListSelectionSort(list.slice(0,indexOfMinimal) ::: list.slice(indexOfMinimal+1, list.length))
         }
-    }    
+    }
+
+    def P19ListStringsInFrame(list: List[String]): Unit = {
+        val maxLength = list.map(s => s.length).max
+        println("*"*(maxLength + 4))
+        list.foreach(s => println(f"* ${s}"+ (" "*(maxLength-s.length)) +" *"))
+        println("*"*(maxLength + 4))
+    }   
     
 
     // Arrays
@@ -318,8 +325,7 @@ object P02_ListsStrings {
         }
     }
 
-    def test() : Unit = {
-    // def main(args: Array[String]) : Unit = {
+    def main(args: Array[String]) : Unit = {
         println("Lists")
         val list = List(3, 2, 1, 32, 11, 23)
         println(f"P01 L 01: ${P01ListLargest01(list)}")
@@ -351,6 +357,7 @@ object P02_ListsStrings {
         println(f"P15 L Part03: ${P15List(List(3,2,1),List(1,2,3), _*_)}")
         println(f"P16 L 01: ${P16ListChangeBase(List(1,2,3),10,5)}")
         println(f"P17 L SelectionSort: ${P17ListSelectionSort(List(5,3,2,4,1))}")
+        println(f"P19 L StringsInFrame: "); P19ListStringsInFrame(List("Hello", "World", "in", "a", "frame"))
 
         println("\nArrays")
         val array = Array(3, 2, 1, 32, 11, 23)
