@@ -179,6 +179,11 @@ object P02_ListsStrings {
         println("*"*(maxLength + 4))
         list.foreach(s => println(f"* ${s}"+ (" "*(maxLength-s.length)) +" *"))
         println("*"*(maxLength + 4))
+    }
+
+    // Capital letters cases (names, sentence beginings) skipped
+    def P20ListPigLatin(text: String): String = {
+        text.split(" ").map(word => word.substring(1,word.length).concat(word(0).toLower.toString).concat("ay")).mkString(" ")
     }   
     
 
@@ -358,6 +363,7 @@ object P02_ListsStrings {
         println(f"P16 L 01: ${P16ListChangeBase(List(1,2,3),10,5)}")
         println(f"P17 L SelectionSort: ${P17ListSelectionSort(List(5,3,2,4,1))}")
         println(f"P19 L StringsInFrame: "); P19ListStringsInFrame(List("Hello", "World", "in", "a", "frame"))
+        println(f"P20 L Pig Latin: ${P20ListPigLatin("The quick brown fox")}")
 
         println("\nArrays")
         val array = Array(3, 2, 1, 32, 11, 23)
