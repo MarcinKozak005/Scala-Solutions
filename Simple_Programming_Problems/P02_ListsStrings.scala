@@ -174,6 +174,16 @@ object P02_ListsStrings {
         }
     }
 
+    def P18ListBinarySearch(list: List[Int], elem: Int): Boolean = {
+        def P18ListBinarySearchHelper(list: List[Int], elem: Int, start: Int, end: Int): Boolean = start + (end-start) / 2 match {
+                case middle if list(middle) > elem && end-start!=0 => P18ListBinarySearchHelper(list, elem, start, middle-1)
+                case middle if list(middle) < elem && end-start!=0 => P18ListBinarySearchHelper(list, elem, middle+1, end)
+                case middle if list(middle) == elem => true
+                case _ => false
+        }
+        P18ListBinarySearchHelper(list, elem, 0, list.length-1)
+    }
+
     def P19ListStringsInFrame(list: List[String]): Unit = {
         val maxLength = list.map(s => s.length).max
         println("*"*(maxLength + 4))
@@ -362,6 +372,7 @@ object P02_ListsStrings {
         println(f"P15 L Part03: ${P15List(List(3,2,1),List(1,2,3), _*_)}")
         println(f"P16 L 01: ${P16ListChangeBase(List(1,2,3),10,5)}")
         println(f"P17 L SelectionSort: ${P17ListSelectionSort(List(5,3,2,4,1))}")
+        println(f"P18 L 01: ${P18ListBinarySearch(list.sorted, 100)}")
         println(f"P19 L StringsInFrame: "); P19ListStringsInFrame(List("Hello", "World", "in", "a", "frame"))
         println(f"P20 L Pig Latin: ${P20ListPigLatin("The quick brown fox")}")
 
