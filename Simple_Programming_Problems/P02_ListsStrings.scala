@@ -174,6 +174,21 @@ object P02_ListsStrings {
         }
     }
 
+    def P17ListInsertionSort(list: List[Int]): List[Int] = {
+        def insertionSortHelper(list: List[Int]):List[Int] = {
+            val pos = list.length - 1
+            var i = list.indexWhere(elem => elem>list(pos))
+            if(i>=0) {
+                (list.slice(0,i) :+ list(pos)) ::: list.slice(i,pos) ::: list.slice(pos+1, list.length)
+            } else list
+        }
+        var result = list
+        for(i <- 0 to list.length){
+            result =  insertionSortHelper(result.slice(0,i+1)) ::: result.slice(i+1,result.length)
+        }
+        result
+    }
+
     def P18ListBinarySearch(list: List[Int], elem: Int): Boolean = {
         def P18ListBinarySearchHelper(list: List[Int], elem: Int, start: Int, end: Int): Boolean = start + (end-start) / 2 match {
                 case middle if list(middle) > elem && end-start!=0 => P18ListBinarySearchHelper(list, elem, start, middle-1)
@@ -191,7 +206,7 @@ object P02_ListsStrings {
         println("*"*(maxLength + 4))
     }
 
-    // Capital letters cases (names, sentence beginings) skipped
+    // Capital letters cases (names, sentence beginnings) skipped
     def P20ListPigLatin(text: String): String = {
         text.split(" ").map(word => word.substring(1,word.length).concat(word(0).toLower.toString).concat("ay")).mkString(" ")
     }   
@@ -372,6 +387,7 @@ object P02_ListsStrings {
         println(f"P15 L Part03: ${P15List(List(3,2,1),List(1,2,3), _*_)}")
         println(f"P16 L 01: ${P16ListChangeBase(List(1,2,3),10,5)}")
         println(f"P17 L SelectionSort: ${P17ListSelectionSort(List(5,3,2,4,1))}")
+        println(f"P17 L InsertionSort: ${P17ListInsertionSort(list)}")
         println(f"P18 L 01: ${P18ListBinarySearch(list.sorted, 100)}")
         println(f"P19 L StringsInFrame: "); P19ListStringsInFrame(List("Hello", "World", "in", "a", "frame"))
         println(f"P20 L Pig Latin: ${P20ListPigLatin("The quick brown fox")}")
