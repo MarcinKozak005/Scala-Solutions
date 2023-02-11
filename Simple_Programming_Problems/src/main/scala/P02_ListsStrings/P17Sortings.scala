@@ -49,10 +49,22 @@ object P17Sortings {
     case h :: tail => P17ListQuickSort(tail.filter(_ < h)) ::: List(h) ::: P17ListQuickSort(tail.filter(_ >= h))
   }
 
+  def P17StoogeSort(list: List[Int]): List[Int] = list match {
+    case Nil => Nil
+    case _ :: Nil => list
+    case List(fst, snd) => if (fst > snd) List(snd, fst) else List(fst, snd)
+    case _ =>
+      val divider = math.ceil(2 * list.length / 3.0).toInt
+      val l1 = P17StoogeSort(list.slice(0, divider)) ::: list.slice(divider, list.length)
+      val l2 = l1.slice(0, l1.length - divider) ::: P17StoogeSort(l1.slice(l1.length - divider, l1.length))
+      P17StoogeSort(l2.slice(0, divider)) ::: l2.slice(divider, l2.length)
+  }
+
   def main(args: Array[String]): Unit = {
     println(f"P17 L SelectionSort: ${P17ListSelectionSort(List(5, 3, 2, 4, 1))}")
     println(f"P17 L InsertionSort: ${P17ListInsertionSort(List(3, 2, 1, 32, 11, 23))}")
     println(f"P17 L MergeSort: ${P17ListMergeSort(List(3, 2, 1, 32, 11, 23))}")
     println(f"P17 L QuickSort: ${P17ListQuickSort(List(3, 2, 1, 32, 11, 23))}")
+    println(f"P17 L StoogeSort: ${P17StoogeSort(List(3, 2, 1, 32, 11, 23))}")
   }
 }
