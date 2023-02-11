@@ -2,7 +2,7 @@ package P01_Elementary
 
 import scala.io.StdIn.readLine
 
-object P3AliceAndBob {
+object P03AliceAndBob {
   def P3AliceAndBob(): Unit = {
     println("What is Your name?")
     val name = readLine()

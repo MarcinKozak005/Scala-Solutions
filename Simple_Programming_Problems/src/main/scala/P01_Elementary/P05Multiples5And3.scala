@@ -2,7 +2,7 @@ package P01_Elementary
 
 import scala.io.StdIn.readLine
 
-object P5Multiples5And3 {
+object P05Multiples5And3 {
   def P5Multiples5And3(): Unit = {
     print("Enter a number: ")
     var (sum, i, n) = (0, 0, readLine())

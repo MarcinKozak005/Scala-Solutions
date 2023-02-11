@@ -2,7 +2,7 @@ package P01_Elementary
 
 import scala.io.StdIn.readLine
 
-object P4SumToN {
+object P04SumToN {
   def P4SumToN(): Unit = {
     print("Enter a number: ")
     val n = readLine()

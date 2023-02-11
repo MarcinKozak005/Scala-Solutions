@@ -4,7 +4,7 @@ import scala.collection.mutable.ArrayBuffer
 import scala.io.StdIn.readLine
 import scala.util.Random
 
-object P9GuessingGame {
+object P09GuessingGame {
   def P9GuessingGame(): Unit = {
     val numberToGuess = Random.nextInt()
     var numberOfTries = 0

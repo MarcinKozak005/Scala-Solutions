@@ -1,5 +1,5 @@
 package P01_Elementary
 
-object P1HelloWorld {
+object P01HelloWorld {
   def P1HelloWorld(): Unit = println("Hello World")
 }

@@ -2,7 +2,7 @@ package P01_Elementary
 
 import scala.io.StdIn.readLine
 
-object P6SumOrProduct {
+object P06SumOrProduct {
   def P6SumOrProduct(): Unit = {
     print("Enter a number: ")
     val n = readLine()

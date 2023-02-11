@@ -1,6 +1,6 @@
 package P01_Elementary
 
-object P8PrimeNumbers {
+object P08PrimeNumbers {
   def P8PrimeNumbers(): Unit = {
     try {
       var num = 2
