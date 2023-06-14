@@ -14,7 +14,7 @@ object P08OnAll {
   }
 
   def main(args: Array[String]): Unit = {
-    println(f"P08 L 01: ${P08ListOnAll01(List.range(1, 21), x => x * x)}")
-    println(f"P08 A 01: ${P08ArrayOnAll01(List.range(1, 21).toArray, x => x * x).mkString(" ")}")
+    println(s"P08 L 01: ${P08ListOnAll01(List.range(1, 21), x => x * x)}")
+    println(s"P08 A 01: ${P08ArrayOnAll01(List.range(1, 21).toArray, x => x * x).mkString(" ")}")
   }
 }

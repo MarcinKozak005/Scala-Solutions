@@ -13,6 +13,6 @@ object P16ChangeBase {
   }
 
   def main(args: Array[String]): Unit = {
-    println(f"P16 L 01: ${P16ListChangeBase(List(1, 2, 3), 10, 5)}")
+    println(s"P16 L 01: ${P16ListChangeBase(List(1, 2, 3), 10, 5)}")
   }
 }

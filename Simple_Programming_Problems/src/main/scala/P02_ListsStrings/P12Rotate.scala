@@ -8,7 +8,7 @@ object P12Rotate {
     val shift = k % list.length
     shift match {
       case 0 => list
-      case x if x > 0 => P12ListRotate01(list.drop(1) :+ list.head, x - 1)
+      case x if x > 0 => P12ListRotate01(list.tail :+ list.head, x - 1)
     }
   }
 
@@ -21,8 +21,8 @@ object P12Rotate {
 
   def main(args: Array[String]): Unit = {
     val seq = Seq(3, 2, 1, 32, 11, 23)
-    println(f"P12 L 01: ${P12ListRotate01(seq.toList, 2)}")
-    println(f"P12 L 02: ${P12ListRotate02(seq.toList, 2)}")
-    println(f"P12 A 01: ${P12ArrayRotate01(seq.toArray, 2).mkString(" ")}")
+    println(s"P12 L 01: ${P12ListRotate01(seq.toList, 2)}")
+    println(s"P12 L 02: ${P12ListRotate02(seq.toList, 2)}")
+    println(s"P12 A 01: ${P12ArrayRotate01(seq.toArray, 2).mkString(" ")}")
   }
 }

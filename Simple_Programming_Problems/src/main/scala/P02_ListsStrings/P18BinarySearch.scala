@@ -16,6 +16,6 @@ object P18BinarySearch {
   }
 
   def main(args: Array[String]): Unit = {
-    println(f"P18 L 01: ${P18ListBinarySearch(List(3, 2, 1, 32, 11, 23).sorted, 100)}")
+    println(s"P18 L 01: ${P18ListBinarySearch(List(3, 2, 1, 32, 11, 23).sorted, 100)}")
   }
 }

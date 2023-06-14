@@ -1,5 +1,7 @@
 package P02_ListsStrings
 
+import scala.annotation.tailrec
+
 object P07Sum {
   def P07Sum01(list: List[Int]): Int = {
     var result = 0
@@ -24,12 +26,13 @@ object P07Sum {
   }
 
   def P07Sum04(list: List[Int]): Int = {
-    def sumElem(list: List[Int]): Int = {
+    @tailrec
+    def sumElem(list: List[Int], result: Int = 0): Int =
       list match {
-        case Nil => 0
-        case x :: tail => x + sumElem(tail)
+        case Nil => result
+        case x :: tail => sumElem(tail, result + x)
       }
-    }
+
     sumElem(list)
   }
 

@@ -12,7 +12,7 @@ object P06IsPalindrome {
   }
 
   def main(args: Array[String]): Unit = {
-    println(f"P06 S 01: ${P06IsPalindrome01("eye")}")
-    println(f"P06 S 02: ${P06IsPalindrome02("eye")}")
+    println(s"P06 S 01: ${P06IsPalindrome01("eye")}")
+    println(s"P06 S 02: ${P06IsPalindrome02("eye")}")
   }
 }

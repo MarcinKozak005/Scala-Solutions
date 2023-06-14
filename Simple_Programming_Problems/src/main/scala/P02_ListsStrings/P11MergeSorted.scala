@@ -8,9 +8,9 @@ object P11MergeSorted {
       list1
     } else {
       if (list1.head <= list2.head) {
-        list1.head +: P11ListMergeSorted01(list1.slice(1, list1.length), list2)
+        list1.head +: P11ListMergeSorted01(list1.tail, list2)
       } else {
-        list2.head +: P11ListMergeSorted01(list1, list2.slice(1, list2.length))
+        list2.head +: P11ListMergeSorted01(list1, list2.tail)
       }
     }
   }
@@ -40,8 +40,8 @@ object P11MergeSorted {
   }
 
   def main(args: Array[String]): Unit = {
-    println(f"P11 L 01: ${P11ListMergeSorted01(List(1, 4, 6), List(2, 3, 5))}")
-    println(f"P11 A 01: ${P11ArrayMergeSorted01(Array(1, 4, 6), Array(2, 3, 5)).mkString(" ")}")
+    println(s"P11 L 01: ${P11ListMergeSorted01(List(1, 4, 6), List(2, 3, 5))}")
+    println(s"P11 A 01: ${P11ArrayMergeSorted01(Array(1, 4, 6), Array(2, 3, 5)).mkString(" ")}")
 
   }
 }

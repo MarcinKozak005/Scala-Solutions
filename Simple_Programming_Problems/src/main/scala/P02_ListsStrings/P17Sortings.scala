@@ -61,10 +61,10 @@ object P17Sortings {
   }
 
   def main(args: Array[String]): Unit = {
-    println(f"P17 L SelectionSort: ${P17ListSelectionSort(List(5, 3, 2, 4, 1))}")
-    println(f"P17 L InsertionSort: ${P17ListInsertionSort(List(3, 2, 1, 32, 11, 23))}")
-    println(f"P17 L MergeSort: ${P17ListMergeSort(List(3, 2, 1, 32, 11, 23))}")
-    println(f"P17 L QuickSort: ${P17ListQuickSort(List(3, 2, 1, 32, 11, 23))}")
-    println(f"P17 L StoogeSort: ${P17StoogeSort(List(3, 2, 1, 32, 11, 23))}")
+    println(s"P17 L SelectionSort: ${P17ListSelectionSort(List(5, 3, 2, 4, 1))}")
+    println(s"P17 L InsertionSort: ${P17ListInsertionSort(List(3, 2, 1, 32, 11, 23))}")
+    println(s"P17 L MergeSort: ${P17ListMergeSort(List(3, 2, 1, 32, 11, 23))}")
+    println(s"P17 L QuickSort: ${P17ListQuickSort(List(3, 2, 1, 32, 11, 23))}")
+    println(s"P17 L StoogeSort: ${P17StoogeSort(List(3, 2, 1, 32, 11, 23))}")
   }
 }
