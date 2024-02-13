@@ -1,5 +1,5 @@
 object P04_SpaceAge {
-  def onEarth(age: Double): Double = age / 31557600;
+  def onEarth(age: Double): Double = age / 31557600
   def onVenus(age: Double): Double = age / (31557600 * 0.61519726)
   def onMercury(age: Double): Double = age / (31557600 * 0.2408467)
   def onMars(age: Double): Double = age / (31557600 * 1.8808158)

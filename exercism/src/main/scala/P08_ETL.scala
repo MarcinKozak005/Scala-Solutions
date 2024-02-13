@@ -1,6 +1,6 @@
 import scala.collection.mutable
 
-object P08_Etl {
+object P08_ETL {
   def transform(scoreMap: Map[Int, Seq[String]]): Map[String, Int] = {
     val result = mutable.Map[String,Int]()
     for (pair <- scoreMap){
