@@ -43,8 +43,3 @@ case class Robot(bearing: Bearing, coordinates: (Int, Int)) {
   }
 
 }
-
-object Robot {
-  def apply(direction: Bearing, coordinates: (Int, Int)): Robot = new Robot(direction, coordinates)
-}
-
