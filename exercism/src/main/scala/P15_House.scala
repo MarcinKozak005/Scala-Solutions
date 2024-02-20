@@ -41,9 +41,3 @@ object House {
 
 }
 
-object Main extends App {
-  print(House.recite(1, 1))
-  print("a")
-}
-
-
