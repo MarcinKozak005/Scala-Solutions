@@ -5,6 +5,8 @@ class P24_Forth {
 import Forth._
 import ForthError.{DivisionByZero, ForthError, InvalidWord, StackUnderflow}
 
+import scala.annotation.tailrec
+
 object ForthError extends Enumeration {
   type ForthError = Value
   val DivisionByZero, StackUnderflow, InvalidWord, UnknownWord = Value
@@ -26,6 +28,7 @@ trait ForthEvaluator {
 }
 
 class Forth extends ForthEvaluator {
+  // TODO Use this.stack!
   private val stack: ForthStack = new ForthStack()
 
   private def performMathOperation(mathOperator: String, stack: ForthStack): Either[ForthError, Int] = {
@@ -57,20 +60,45 @@ class Forth extends ForthEvaluator {
     else Left(StackUnderflow)
 
 
-  private def processInput(inputList: List[String], stack: ForthStack): Either[ForthError, ForthEvaluatorState] = {
+  @tailrec
+  private def normalizeExpression(expression: List[String], userDefinedWords: Map[String, List[String]], result: List[String]): List[String] =
+    expression.headOption match {
+      case None => result.reverse
+      case Some(x) => if (userDefinedWords.contains(x)) normalizeExpression(expression.tail, userDefinedWords, userDefinedWords(x) ++ result)
+      else normalizeExpression(expression.tail, userDefinedWords, x +: result)
+    }
+
+  private def processWordRegistration(inputList: List[String], userDefinedWords: Map[String, List[String]]): Either[ForthError, Map[String, List[String]]] = {
+    val key :: expression = inputList.takeWhile(_ != ";")
+    val newExpression = normalizeExpression(expression, userDefinedWords, List.empty)
+    if (key.matches("\\d+")) {
+      Left(InvalidWord)
+    }
+    else Right(userDefinedWords.updated(key, newExpression))
+  }
+
+  private def processInput(inputList: List[String], stack: ForthStack, userDefinedWords: Map[String, List[String]]): Either[ForthError, ForthEvaluatorState] = {
     inputList.headOption match {
       case None => Right(stack)
       case Some(input) => input match {
-        case DigitRegex(digit) => processInput(inputList.tail, stack.push(digit.toInt))
+        // register function
+        case registerWord if registerWord == ":" =>
+          processWordRegistration(inputList.tail, userDefinedWords).fold(
+            Left(_),
+            newUserDefinedWords => processInput(inputList.dropWhile(_ != ";").tail, stack, newUserDefinedWords)
+          )
+        // compute function value
+        case wordUse if userDefinedWords.contains(wordUse) => processInput(userDefinedWords(wordUse) ++ inputList.tail, stack, userDefinedWords)
+        case DigitRegex(digit) => processInput(inputList.tail, stack.push(digit.toInt), userDefinedWords)
         case mathOperation if MathOperators.contains(mathOperation) =>
           performMathOperation(mathOperation, stack).fold(
             Left(_),
-            result => processInput(inputList.tail, stack.afterMathOperation.push(result))
+            result => processInput(inputList.tail, stack.afterMathOperation.push(result), userDefinedWords)
           )
         case forthOperation if ForthOperations.contains(forthOperation) =>
           performForthOperation(forthOperation, stack).fold(
             Left(_),
-            resultStack => processInput(inputList.tail, resultStack)
+            resultStack => processInput(inputList.tail, resultStack, userDefinedWords)
           )
         case _ => Left(InvalidWord)
       }
@@ -78,7 +106,7 @@ class Forth extends ForthEvaluator {
   }
 
   def eval(text: String): Either[ForthError, ForthEvaluatorState] = {
-    processInput(text.toLowerCase.split(" ").toList, stack)
+    processInput(text.toLowerCase.split(" ").toList, stack, Map.empty)
   }
 }
 

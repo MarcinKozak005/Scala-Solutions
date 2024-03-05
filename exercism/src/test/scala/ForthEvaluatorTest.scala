@@ -98,6 +98,9 @@ class ForthTest extends AnyFunSuite with Matchers {
   test("over - errors if there is only one value on the stack") {
     forth.eval("1 over").isLeft should be(true)
   }
+  //
+
+
   test("user-defined words - can consist of built-in words") {
     forth
       .eval(": dup-twice dup dup ; 1 dup-twice")
@@ -134,6 +137,19 @@ class ForthTest extends AnyFunSuite with Matchers {
   test("user-defined words - errors if executing a non-existent word") {
     forth.eval("foo").isLeft should be(true)
   }
+  test("case-insensitivity - user-defined words are case-insensitive") {
+    forth.eval(": foo dup ; 1 FOO Foo foo").fold(_ => "", _.toString) should be(
+      "1 1 1 1")
+  }
+  test("case-insensitivity - definitions are case-insensitive") {
+    forth
+      .eval(": SWAP DUP Dup dup ; 1 swap")
+      .fold(_ => "", _.toString) should be("1 1 1 1")
+  }
+
+
+
+
   test("case-insensitivity - DUP is case-insensitive") {
     forth.eval("1 DUP Dup dup").fold(_ => "", _.toString) should be("1 1 1 1")
   }
@@ -149,13 +165,5 @@ class ForthTest extends AnyFunSuite with Matchers {
     forth.eval("1 2 OVER Over over").fold(_ => "", _.toString) should be(
       "1 2 1 2 1")
   }
-  test("case-insensitivity - user-defined words are case-insensitive") {
-    forth.eval(": foo dup ; 1 FOO Foo foo").fold(_ => "", _.toString) should be(
-      "1 1 1 1")
-  }
-  test("case-insensitivity - definitions are case-insensitive") {
-    forth
-      .eval(": SWAP DUP Dup dup ; 1 swap")
-      .fold(_ => "", _.toString) should be("1 1 1 1")
-  }
+
 }
