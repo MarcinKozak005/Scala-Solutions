@@ -1,11 +1,9 @@
-class P24_Forth {
-
-}
-
 import Forth._
-import ForthError.{DivisionByZero, ForthError, InvalidWord, StackUnderflow}
+import ForthError.{DivisionByZero, ForthError, InvalidWord, StackUnderflow, UnknownWord}
 
 import scala.annotation.tailrec
+
+class P24_Forth {}
 
 object ForthError extends Enumeration {
   type ForthError = Value
@@ -13,8 +11,6 @@ object ForthError extends Enumeration {
 }
 
 trait ForthEvaluatorState {
-  // TODO: Implement. return the current stack as Text with the element
-  // on top of the stack being the rightmost element in the output."
   def toString: String
 }
 
@@ -23,115 +19,130 @@ abstract class Definition {
 }
 
 trait ForthEvaluator {
-  // TODO: Implement evaluation
   def eval(text: String): Either[ForthError, ForthEvaluatorState]
+
+  def processInput(inputList: List[String]): Either[ForthError, ForthEvaluatorState]
 }
 
-class Forth extends ForthEvaluator {
-  // TODO Use this.stack!
-  private val stack: ForthStack = new ForthStack()
+class Forth(stack: ForthStack, userDefinedWords: Map[String, List[String]]) extends ForthEvaluator {
+  def this() = this(new ForthStack, Map.empty)
 
-  private def performMathOperation(mathOperator: String, stack: ForthStack): Either[ForthError, Int] = {
-    if (stack.size < 2) Left(StackUnderflow)
+  private def performMathOperation(mathOperator: String): Either[ForthError, ForthEvaluator] = {
+    val operationResult = if (stack.size < 2) Left(StackUnderflow)
     else {
       val second = stack.peek
       val first = stack.tail.peek
       mathOperator match {
-        case "+" => Right(first + second)
-        case "-" => Right(first - second)
-        case "*" => Right(first * second)
-        case "/" => if (second == 0) Left(DivisionByZero) else Right(first / second)
+        case MathPlus => Right(first + second)
+        case MathMinus => Right(first - second)
+        case MathMultiplication => Right(first * second)
+        case MathDivision => if (second == 0) Left(DivisionByZero) else Right(first / second)
       }
     }
+    operationResult.fold(Left(_), mathResult => Right(new Forth(stack.afterMathOperation.push(mathResult), userDefinedWords)))
   }
 
-  private def performForthOperation(forthOperation: String, stack: ForthStack): Either[ForthError, ForthStack] =
-    if (OneArgForthOperations.contains(forthOperation) && stack.size >= 1) Right(forthOperation match {
-      case "dup" => stack.push(stack.peek)
-      case "drop" => stack.tail
+  private def performForthOperation(forthOperation: String): Either[ForthError, ForthEvaluator] = {
+    val operationResult = if (OneArgForthOperations.contains(forthOperation) && stack.size >= 1) Right(forthOperation match {
+      case ForthDup => stack.push(stack.peek)
+      case ForthDrop => stack.tail
     })
     else if (TwoArgForthOperations.contains(forthOperation) && stack.size >= 2) Right(forthOperation match {
-      case "swap" =>
+      case ForthSwap =>
         val top = stack.peek
         val bottom = stack.tail.peek
         stack.tail.tail.push(top).push(bottom)
-      case "over" => stack.push(stack.tail.peek)
+      case ForthOver => stack.push(stack.tail.peek)
     })
     else Left(StackUnderflow)
+    operationResult.fold(Left(_), resultStack => Right(new Forth(resultStack, userDefinedWords)))
+  }
 
 
   @tailrec
-  private def normalizeExpression(expression: List[String], userDefinedWords: Map[String, List[String]], result: List[String]): List[String] =
-    expression.headOption match {
+  private def resolveComplexExpression(expressions: List[String], result: List[String]): List[String] =
+    expressions.headOption match {
       case None => result.reverse
-      case Some(x) => if (userDefinedWords.contains(x)) normalizeExpression(expression.tail, userDefinedWords, userDefinedWords(x) ++ result)
-      else normalizeExpression(expression.tail, userDefinedWords, x +: result)
+      case Some(definedWord) =>
+        if (userDefinedWords.contains(definedWord))
+          resolveComplexExpression(expressions.tail, userDefinedWords(definedWord) ++ result)
+        else resolveComplexExpression(expressions.tail, definedWord +: result)
     }
 
-  private def processWordRegistration(inputList: List[String], userDefinedWords: Map[String, List[String]]): Either[ForthError, Map[String, List[String]]] = {
-    val key :: expression = inputList.takeWhile(_ != ";")
-    val newExpression = normalizeExpression(expression, userDefinedWords, List.empty)
-    if (key.matches("\\d+")) {
+  private def processWordRegistration(inputList: List[String]): Either[ForthError, ForthEvaluator] = {
+    val key :: expressions = inputList.takeWhile(DefinitionEndCond)
+    val resolvedExpression = resolveComplexExpression(expressions, List.empty)
+    if (key.matches(DigitRegex.toString()))
       Left(InvalidWord)
-    }
-    else Right(userDefinedWords.updated(key, newExpression))
+    else Right(new Forth(stack, userDefinedWords.updated(key, resolvedExpression)))
   }
 
-  private def processInput(inputList: List[String], stack: ForthStack, userDefinedWords: Map[String, List[String]]): Either[ForthError, ForthEvaluatorState] = {
+  override def processInput(inputList: List[String]): Either[ForthError, ForthEvaluatorState] = {
     inputList.headOption match {
       case None => Right(stack)
       case Some(input) => input match {
-        // register function
-        case registerWord if registerWord == ":" =>
-          processWordRegistration(inputList.tail, userDefinedWords).fold(
+        case registerWord if registerWord == DefinitionStartSymbol =>
+          processWordRegistration(inputList.tail).fold(
             Left(_),
-            newUserDefinedWords => processInput(inputList.dropWhile(_ != ";").tail, stack, newUserDefinedWords)
+            _.processInput(inputList.dropWhile(DefinitionEndCond).tail)
           )
-        // compute function value
-        case wordUse if userDefinedWords.contains(wordUse) => processInput(userDefinedWords(wordUse) ++ inputList.tail, stack, userDefinedWords)
-        case DigitRegex(digit) => processInput(inputList.tail, stack.push(digit.toInt), userDefinedWords)
+        case wordUse if userDefinedWords.contains(wordUse) =>
+          processInput(userDefinedWords(wordUse) ++ inputList.tail)
+        case DigitRegex(digit) =>
+          new Forth(stack.push(digit.toInt), userDefinedWords).processInput(inputList.tail)
         case mathOperation if MathOperators.contains(mathOperation) =>
-          performMathOperation(mathOperation, stack).fold(
+          performMathOperation(mathOperation).fold(
             Left(_),
-            result => processInput(inputList.tail, stack.afterMathOperation.push(result), userDefinedWords)
+            _.processInput(inputList.tail)
           )
         case forthOperation if ForthOperations.contains(forthOperation) =>
-          performForthOperation(forthOperation, stack).fold(
+          performForthOperation(forthOperation).fold(
             Left(_),
-            resultStack => processInput(inputList.tail, resultStack, userDefinedWords)
+            _.processInput(inputList.tail)
           )
-        case _ => Left(InvalidWord)
+        case _ => Left(UnknownWord)
       }
     }
   }
 
   def eval(text: String): Either[ForthError, ForthEvaluatorState] = {
-    processInput(text.toLowerCase.split(" ").toList, stack, Map.empty)
+    processInput(text.toLowerCase.split(" ").toList)
   }
 }
 
 object Forth {
+  private val ForthDup = "dup"
+  private val ForthDrop = "drop"
+  private val ForthSwap = "swap"
+  private val ForthOver = "over"
+  private val OneArgForthOperations = List(ForthDup, ForthDrop)
+  private val TwoArgForthOperations = List(ForthSwap, ForthOver)
+  private val ForthOperations = OneArgForthOperations ++ TwoArgForthOperations
   private val DigitRegex = "(\\d+)".r
-  private val MathOperators = List("+", "-", "*", "/")
-  private val ForthOperations = List("dup", "drop", "swap", "over")
-  private val OneArgForthOperations = ForthOperations.take(2)
-  private val TwoArgForthOperations = ForthOperations.drop(2)
+  private val MathPlus = "+"
+  private val MathMinus = "-"
+  private val MathMultiplication = "*"
+  private val MathDivision = "/"
+  private val MathOperators = List(MathPlus, MathMinus, MathMultiplication, MathDivision)
+  private val DefinitionEndCond: String => Boolean = _ != ";"
+  private val DefinitionStartSymbol = ":"
+
 }
 
-class ForthStack(stack: List[Int]) extends ForthEvaluatorState {
+class ForthStack(stackList: List[Int]) extends ForthEvaluatorState {
   def this() = this(List.empty[Int])
 
-  def push(value: Int): ForthStack = new ForthStack(stack.prepended(value))
+  def push(value: Int): ForthStack = new ForthStack(value +: stackList)
 
-  def peek: Int = stack.head
+  def peek: Int = stackList.head
 
-  def tail: ForthStack = new ForthStack(stack.tail)
+  def tail: ForthStack = new ForthStack(stackList.tail)
 
-  def size: Int = stack.size
+  def size: Int = stackList.size
 
   def afterMathOperation: ForthStack = this.tail.tail
 
-  override def toString: String = stack.reverse.mkString(" ")
+  override def toString: String = stackList.reverse.mkString(" ")
 }
 
 
