@@ -21,13 +21,17 @@ abstract class Definition {
 trait ForthEvaluator {
   def eval(text: String): Either[ForthError, ForthEvaluatorState]
 
+}
+
+trait InputProcessor {
+  // tbh it could be a part of ForthEvaluator, but I can't make exercism Web GUI accept modified ForthEvaluator
   def processInput(inputList: List[String]): Either[ForthError, ForthEvaluatorState]
 }
 
-class Forth(stack: ForthStack, userDefinedWords: Map[String, List[String]]) extends ForthEvaluator {
+class Forth(stack: ForthStack, userDefinedWords: Map[String, List[String]]) extends ForthEvaluator with InputProcessor {
   def this() = this(new ForthStack, Map.empty)
 
-  private def performMathOperation(mathOperator: String): Either[ForthError, ForthEvaluator] = {
+  private def performMathOperation(mathOperator: String): Either[ForthError, InputProcessor] = {
     val operationResult = if (stack.size < 2) Left(StackUnderflow)
     else {
       val second = stack.peek
@@ -42,7 +46,7 @@ class Forth(stack: ForthStack, userDefinedWords: Map[String, List[String]]) exte
     operationResult.fold(Left(_), mathResult => Right(new Forth(stack.afterMathOperation.push(mathResult), userDefinedWords)))
   }
 
-  private def performForthOperation(forthOperation: String): Either[ForthError, ForthEvaluator] = {
+  private def performForthOperation(forthOperation: String): Either[ForthError, InputProcessor] = {
     val operationResult = if (OneArgForthOperations.contains(forthOperation) && stack.size >= 1) Right(forthOperation match {
       case ForthDup => stack.push(stack.peek)
       case ForthDrop => stack.tail
@@ -69,7 +73,7 @@ class Forth(stack: ForthStack, userDefinedWords: Map[String, List[String]]) exte
         else resolveComplexExpression(expressions.tail, definedWord +: result)
     }
 
-  private def processWordRegistration(inputList: List[String]): Either[ForthError, ForthEvaluator] = {
+  private def processWordRegistration(inputList: List[String]): Either[ForthError, InputProcessor] = {
     val key :: expressions = inputList.takeWhile(DefinitionEndCond)
     val resolvedExpression = resolveComplexExpression(expressions, List.empty)
     if (key.matches(DigitRegex.toString()))
@@ -82,24 +86,15 @@ class Forth(stack: ForthStack, userDefinedWords: Map[String, List[String]]) exte
       case None => Right(stack)
       case Some(input) => input match {
         case registerWord if registerWord == DefinitionStartSymbol =>
-          processWordRegistration(inputList.tail).fold(
-            Left(_),
-            _.processInput(inputList.dropWhile(DefinitionEndCond).tail)
-          )
+          processWordRegistration(inputList.tail).fold(Left(_), _.processInput(inputList.dropWhile(DefinitionEndCond).tail))
         case wordUse if userDefinedWords.contains(wordUse) =>
           processInput(userDefinedWords(wordUse) ++ inputList.tail)
         case DigitRegex(digit) =>
           new Forth(stack.push(digit.toInt), userDefinedWords).processInput(inputList.tail)
         case mathOperation if MathOperators.contains(mathOperation) =>
-          performMathOperation(mathOperation).fold(
-            Left(_),
-            _.processInput(inputList.tail)
-          )
+          performMathOperation(mathOperation).fold(Left(_), _.processInput(inputList.tail))
         case forthOperation if ForthOperations.contains(forthOperation) =>
-          performForthOperation(forthOperation).fold(
-            Left(_),
-            _.processInput(inputList.tail)
-          )
+          performForthOperation(forthOperation).fold(Left(_), _.processInput(inputList.tail))
         case _ => Left(UnknownWord)
       }
     }
